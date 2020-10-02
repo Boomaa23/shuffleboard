@@ -33,6 +33,8 @@ public final class AppPreferences {
       new SimpleBooleanProperty(this, "automaticallyLoadLastSaveFile", true);
   private final BooleanProperty confirmExit =
       new SimpleBooleanProperty(this, "showConfirmationDialogWhenExiting", true);
+  private final BooleanProperty useDestroyedSources =
+          new SimpleBooleanProperty(this, "useDestroyedSources", true);
 
   private final Category settings = Category.of("App Settings",
       Group.of("Theme",
@@ -46,7 +48,8 @@ public final class AppPreferences {
           Setting.of("Load last save file", "Load the most recent save file at startup", autoLoadLastSaveFile)
       ),
       Group.of("Miscellaneous",
-          Setting.of("Confirm exit", "Request confirmation before exiting", confirmExit)
+          Setting.of("Confirm exit", "Request confirmation before exiting", confirmExit),
+          Setting.of("Destroy sources", "Gray out cleared values instead of removing them", useDestroyedSources)
       )
   );
 
@@ -64,6 +67,7 @@ public final class AppPreferences {
     PreferencesUtils.read(saveFile, preferences, File::new);
     PreferencesUtils.read(autoLoadLastSaveFile, preferences);
     PreferencesUtils.read(confirmExit, preferences);
+    PreferencesUtils.read(useDestroyedSources, preferences);
 
     theme.addListener(__ -> PreferencesUtils.save(theme, preferences, Theme::getName));
     defaultTileSize.addListener(__ -> PreferencesUtils.save(defaultTileSize, preferences));
@@ -71,6 +75,7 @@ public final class AppPreferences {
     saveFile.addListener(__ -> PreferencesUtils.save(saveFile, preferences, File::getAbsolutePath));
     autoLoadLastSaveFile.addListener(__ -> PreferencesUtils.save(autoLoadLastSaveFile, preferences));
     confirmExit.addListener(__ -> PreferencesUtils.save(confirmExit, preferences));
+    useDestroyedSources.addListener(__ -> PreferencesUtils.save(useDestroyedSources, preferences));
   }
 
   public static AppPreferences getInstance() {
@@ -151,5 +156,13 @@ public final class AppPreferences {
 
   public void setConfirmExit(boolean confirmExit) {
     this.confirmExit.set(confirmExit);
+  }
+
+  public boolean isUsingDestroyedSources() {
+    return useDestroyedSources.get();
+  }
+
+  public BooleanProperty useDestroyedSourcesProperty() {
+    return useDestroyedSources;
   }
 }

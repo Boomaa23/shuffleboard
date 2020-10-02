@@ -198,7 +198,8 @@ public class WidgetPaneController {
         .map(Tile::getContent)
         .flatMap(Component::allComponents)
         .flatMap(TypeUtils.castStream(Sourced.class))
-        .forEach(s -> replaceWithDestroyedSource(s, removedUris));
+        .forEach(AppPreferences.getInstance().isUsingDestroyedSources() ?
+                s -> replaceWithDestroyedSource(s, removedUris) : Sourced::removeAllSources);
   }
 
   private void createPaneContextMenu(ContextMenuEvent e) {
